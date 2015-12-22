@@ -11,34 +11,23 @@ namespace libdabawd
 		public dynamic _ { get { return LuaEnvironment; } }
 
 		public IrcScriptEngine () {
-			try {
-				Engine = new Lua (
-					integerType: LuaIntegerType.Int32,
-					floatType: LuaFloatType.Float
-				);
-				LuaEnvironment = Engine.CreateEnvironment<LuaGlobal> ();
-			} catch (Exception e) {
-				Console.WriteLine ("Error: {0}", e.Message);
-			}
+			Engine = new Lua (
+				integerType: LuaIntegerType.Int32,
+				floatType: LuaFloatType.Float
+			);
+			LuaEnvironment = Engine.CreateEnvironment<LuaGlobal> ();
+		}
+
+		public string DoSource (string source) {
+			return LuaEnvironment.DoChunk (source, "__temp.lua").ToString ();
 		}
 
 		public void LoadSource (string source, string name) {
-			try {
-				LuaEnvironment.DoChunk (source, name);
-			} catch (Exception e) {
-				Console.WriteLine ("Error: {0}", e.Message);
-			}
+			LuaEnvironment.DoChunk (source, name);
 		}
 
 		public object Call (string function, params object[] args) {
-			LuaResult result;
-			try {
-				result = LuaEnvironment.CallMember (function, args);
-			} catch (Exception e) {
-				Console.WriteLine ("Error: {0}", e.Message);
-				result = LuaResult.Empty;
-			}
-			return result;
+			return LuaEnvironment.CallMember (function, args);
 		}
 
 		#region IDisposable implementation

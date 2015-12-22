@@ -4,6 +4,7 @@ using Codeaddicts.libArgument;
 using libdabawd;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace dabawd
 {
@@ -54,6 +55,27 @@ namespace dabawd
 			API.Register ("listscripts", (args => {
 				var files = Directory.GetFiles (ScriptDir, "*.lua", SearchOption.AllDirectories);
 				return string.Join (" ", files.Select (f => Path.GetFileNameWithoutExtension (f)).ToArray ());
+			}));
+			API.Register ("callscript", (args => {
+				var script = (string) args [0];
+				var engine = Bot.ScriptEngines.FirstOrDefault (e => e.Key == script);
+				return engine.Value != null
+					? TryCall (engine.Value, Bot.Client.Channels.First (), (string)args [1], args.Skip (2).ToArray<object> ())
+					: null;
+			}));
+			API.Register ("eval", (args => {
+				var statements = string.Join (" ", args);
+				string result;
+				using (var temp = new IrcScriptEngine ()) {
+					try {
+						var task = Task.Factory.StartNew<string> (() => temp.DoSource (statements));
+						task.Wait (3000);
+						result = task.IsCompleted ? task.Result : "(nil): Task didn't complete in time";
+					} catch (Exception e) {
+						result = string.Format ("(nil): {0}", e.Message);
+					}
+				}
+				return result;
 			}));
 			#endregion
 		}
@@ -120,7 +142,7 @@ namespace dabawd
 		void Bot_Client_ChannelMessage (string channel, string message, string sender) {
 			Console.WriteLine ("[{0}] {1}: {2}", channel, sender, message);
 			foreach (var engine in Bot.ScriptEngines)
-				engine.Value.Call ("onmessage", API, channel, message, sender);
+				TryCall (engine.Value, Bot.Client.Channels.First (), "onmessage", API, channel, message, sender);
 			for (var i = 0; i < ScriptActions.Count; i++) {
 				var action = ScriptActions.Dequeue ();
 				switch (action.Action) {
@@ -141,6 +163,17 @@ namespace dabawd
 					break;
 				}
 			}
+		}
+
+		object TryCall (IrcScriptEngine engine, string channel, string func, params object[] args) {
+			object result = null;
+			try {
+				result = engine.Call (func, args);
+			} catch (Exception e) {
+				Log ("[{0}] {1}", e.GetType ().Name, e.Message);
+				Bot.Client.PRIVMSG (channel, string.Format ("[{0}] {1}", e.GetType ().Name, e.Message));
+			}
+			return result;
 		}
 
 		static void Log (string format, params object[] args) {

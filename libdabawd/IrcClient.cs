@@ -371,7 +371,7 @@ namespace libdabawd
 					var commandParts = line.TrimStart (':').Split (' ');
 
 					string ident = string.Empty;
-					if (commandParts.First ().Contains (Server)) {
+					if (commandParts.First ().Contains (Server) && !commandParts.First ().Contains ("@")) {
 
 						switch (commandParts [1]) {
 						case "001":
@@ -406,7 +406,7 @@ namespace libdabawd
 							continue;
 					}
 					else if (commandParts.First ().Contains ("@")) {
-
+						
 						ident = commandParts.First ();
 						commandParts = commandParts.Skip (1).ToArray ();
 					}

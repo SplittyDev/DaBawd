@@ -4,26 +4,26 @@ almighty = { "splitty_", "Viperidae", "Chronium" }
 
 -- help: help
 helpcat["help"] =
-    "Display this help.\r\n"
+    "Display this help."
 
 -- help: load
 helpcat["load"] =
-    "Load a script.\r\n\z
-    Info: Loads all scripts if called without parameter.\r\n"
+    "Load a script.\n\z
+    Info: Loads all scripts if called without parameter."
 
 -- help: reload
 helpcat["reload"] =
-    "Reload a script.\r\n\z
+    "Reload a script.\n\z
     Info: Reloads all scripts if called without parameter."
 
 -- help: unload
 helpcat["unload"] =
-    "Unload a script.\r\n\z
+    "Unload a script.\n\z
     Usage: admin unload <script>"
 
 -- help: list
 helpcat["list"] =
-    "List available scripts.\r\n"
+    "List available scripts."
 
 function onmessage (api, channel, message, sender)
     -- Check if the message contains spaces
@@ -50,15 +50,19 @@ function onmessage (api, channel, message, sender)
         end
         -- Send a message and return if not
         if not privileged then
-            api:call ("sendmsg", channel, "You are not privileged to do that.")
+            if not string.find (message, "please") then
+                api:call ("sendmsg", channel, "Ah ah ah, you didn't say the magic word.")
+            else
+                api:call ("sendmsg", channel, "Nice! Sadly you still can't do that.")
+            end
             return
         end
         local action = parts [1]
         -- Check if the action is registered
-        if actions[action] ~= nil then
+        if actions [action] ~= nil then
             table.remove (parts, 1)
             -- Call the action
-            actions[action] (api, channel, message, sender, parts)
+            actions [action] (api, channel, message, sender, parts)
         end
     end
 end

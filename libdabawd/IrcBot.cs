@@ -53,6 +53,7 @@ namespace libdabawd
 					ScriptEngines.Add (name, engine);
 				} catch (Exception e) {
 					Console.WriteLine ("Error: {0}", e.Message);
+					Client.PRIVMSG (Client.Channels.First (), e.Message);
 				}
 			}
 			return this;

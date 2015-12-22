@@ -82,5 +82,9 @@ namespace libdabawd
 		public static explicit operator IrcCommand (string str) {
 			return new IrcCommand (str);
 		}
+
+		public override string ToString () {
+			return (string)this;
+		}
 	}
 }
