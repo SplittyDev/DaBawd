@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libdabawd", "libdabawd\libdabawd.csproj", "{FCD34A93-17B5-4D10-B126-61066656C830}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dabawd", "dabawd\dabawd.csproj", "{79C1DD37-63E7-4525-9FDB-DB1727163C0B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{79C1DD37-63E7-4525-9FDB-DB1727163C0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79C1DD37-63E7-4525-9FDB-DB1727163C0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79C1DD37-63E7-4525-9FDB-DB1727163C0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79C1DD37-63E7-4525-9FDB-DB1727163C0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCD34A93-17B5-4D10-B126-61066656C830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCD34A93-17B5-4D10-B126-61066656C830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCD34A93-17B5-4D10-B126-61066656C830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCD34A93-17B5-4D10-B126-61066656C830}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
