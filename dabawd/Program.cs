@@ -131,8 +131,10 @@ namespace dabawd
 			Log ("Connected to {0}:{1}", hostname, port);
 		}
 
-		static void Bot_Client_Disconnected (object sender, EventArgs e) {
+		void Bot_Client_Disconnected (object sender, EventArgs e) {
 			Log ("Disconnected");
+			Bot.Client.Reconnect ();
+			Bot.Login (Options.GetNick ());
 		}
 
 		static void Bot_Client_ChannelJoined (string channel) {

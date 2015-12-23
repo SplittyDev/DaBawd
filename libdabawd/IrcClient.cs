@@ -27,6 +27,8 @@ namespace libdabawd
 		/// <value>The port.</value>
 		public int Port { get; private set; }
 
+		public bool UseSSL { get; private set; }
+
 		/// <summary>
 		/// Gets a value indicating whether this instance is connected.
 		/// </summary>
@@ -173,6 +175,12 @@ namespace libdabawd
 			PrivateMessage += (message, sender) => { };
 			Connected += (hostname, port) => { };
 			Disconnected += (sender, e) => { };
+		}
+
+		public void Reconnect () {
+			tmp_names.Clear ();
+			Channels.Clear ();
+			Connect (Server, Port, UseSSL);
 		}
 
 		/// <summary>
@@ -330,6 +338,7 @@ namespace libdabawd
 
 			Server = server;
 			Port = port;
+			UseSSL = ssl;
 
 			client = new TcpClient (Server, Port);
 			Stream = client.GetStream ();
