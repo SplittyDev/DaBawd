@@ -176,7 +176,7 @@ namespace libdabawd
 			Connected += (hostname, port) => { };
 			Disconnected += (sender, e) => { };
 		}
-
+			
 		public void Reconnect () {
 			tmp_names.Clear ();
 			Channels.Clear ();

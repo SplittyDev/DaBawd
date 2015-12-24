@@ -28,6 +28,7 @@ namespace dabawd
 			ScriptDir = "../../scripts";
 
 			#region API
+			API.Register ("test", (args => "test"));
 			API.Register ("loadscript", (args => {
 				ScriptActions.Enqueue (new ScriptAction ((string) args [0], ScriptActionEnum.Load));
 				return null;
@@ -59,23 +60,30 @@ namespace dabawd
 			API.Register ("callscript", (args => {
 				var script = (string) args [0];
 				var engine = Bot.ScriptEngines.FirstOrDefault (e => e.Key == script);
-				return engine.Value != null
+				return engine.Value != null	
 					? TryCall (engine.Value, Bot.Client.Channels.First (), (string)args [1], args.Skip (2).ToArray<object> ())
 					: null;
 			}));
 			API.Register ("eval", (args => {
 				var statements = string.Join (" ", args);
+				if (statements.Contains ("os.execute"))
+					return "(nil): Don't you dare to this to me";
+				statements = string.Format ("function entry (api) return ({0}) end", statements);
 				string result;
 				using (var temp = new IrcScriptEngine ()) {
 					try {
-						var task = Task.Factory.StartNew<string> (() => temp.DoSource (statements));
+						var task = Task.Factory.StartNew<string> (() => {
+							temp.LoadSource (statements, "__temp.lua");
+							return temp.Call ("entry", API).ToString ();
+						});
 						task.Wait (3000);
 						result = task.IsCompleted ? task.Result : "(nil): Task didn't complete in time";
 					} catch (Exception e) {
 						result = string.Format ("(nil): {0}", e.Message);
 					}
 				}
-				return result;
+				result = result.Trim ('{', '}', ' ');
+				return result == string.Empty ? "(nil)" : result;
 			}));
 			#endregion
 		}

@@ -12,7 +12,6 @@ function onmessage (api, channel, message, sender)
     if parts [1] == "eval" then
         table.remove (parts, 1)
         local statements = message:sub (6)
-        statements = string.format ("return (%s)", statements)
         local response = api:call ("eval", statements)
         api:call ("sendmsg", channel, response)
     end
